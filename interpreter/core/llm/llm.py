@@ -9,6 +9,7 @@ from .run_text_llm import run_text_llm
 from .utils.convert_to_openai_messages import convert_to_openai_messages
 
 litellm.suppress_debug_info = True
+litellm.disable_streaming_logging = True
 
 
 class Llm:
