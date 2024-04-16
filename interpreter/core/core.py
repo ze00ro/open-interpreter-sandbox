@@ -210,6 +210,7 @@ class OpenInterpreter:
                         "type": "console",
                         "format": "output",
                         "content": "",
+                        "total_tokens": chunk.get("total_tokens", 0)
                     }
                 )
                 continue

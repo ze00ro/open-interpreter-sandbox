@@ -1,5 +1,6 @@
 from .utils.merge_deltas import merge_deltas
 from .utils.parse_partial_json import parse_partial_json
+from litellm import token_counter
 
 function_schema = {
     "name": "execute",
@@ -41,6 +42,9 @@ def run_function_calling_llm(llm, request_params):
     language = None
     code = ""
 
+    total_tokens = token_counter(model=request_params["model"], messages=request_params["messages"])
+    # print(f"total_tokens -> {total_tokens}")
+
     for chunk in llm.completions(**request_params):
         if "choices" not in chunk or len(chunk["choices"]) == 0:
             # This happens sometimes
@@ -52,7 +56,7 @@ def run_function_calling_llm(llm, request_params):
         accumulated_deltas = merge_deltas(accumulated_deltas, delta)
 
         if "content" in delta and delta["content"]:
-            yield {"type": "message", "content": delta["content"]}
+            yield {"type": "message", "content": delta["content"], "total_tokens": total_tokens}
 
         if (
             accumulated_deltas.get("function_call")
@@ -86,6 +90,7 @@ def run_function_calling_llm(llm, request_params):
                                 "type": "code",
                                 "format": language,
                                 "content": code_delta,
+                                "total_tokens": total_tokens
                             }
                 else:
                     if llm.interpreter.verbose:
@@ -114,6 +119,7 @@ def run_function_calling_llm(llm, request_params):
                             "type": "code",
                             "format": language,
                             "content": code_delta,
+                            "total_tokens": total_tokens
                         }
 
             else:
