@@ -30,7 +30,7 @@ jupyter-client = "^8.6.0"
 matplotlib = "^3.8.2"
 toml = "^0.10.2"
 posthog = "^3.1.0"
-openai = "^1.6.1"
+openai = "^1.29.0"
 
 #Optional dependencies
 opencv-python = { version = "^4.8.1.78", optional = true }
